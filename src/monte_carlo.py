@@ -5,6 +5,7 @@ from scipy.optimize import OptimizeResult
 
 # %%
 method_name = 'CanonicalMc'
+tol_default = 1.e-3
 
 
 class NoBetaError(OptimizeResult):
@@ -41,9 +42,26 @@ def minimize(func, x0, args=(), method=method_name,
         return NoBetaError()
     if not 'x_digit' in options.keys():
         return NoXDigitError()
+    if tol is None:
+        tol = tol_default
     beta = options.beta
-    e_last = func(x0, args)
-    x_cur = next(x0, options.digit)
+    e0 = func(x0, args)
+    if 'max_loop' in options.keys():
+        max_loop = options[max_loop]
+    for _ in range(max_loop)
+        x1 = next(x0, options.digit)
+        e1 = func(x1, args)
+        delta = beta * (e1 - e0)
+        if delta > 0:
+            r = np.random.rand()
+            p = np.exp(-delta)
+            if r > p:
+                continue
+        if abs(e1 - e0) < tol:
+            break
+        x0 = x1
+        e0 = e1
+
     return result
 
 # %%
